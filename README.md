@@ -79,6 +79,23 @@ npx expo start -c --tunnel
 - Node.js 20 LTS (the project now declares `>=20 <22` in `package.json`).
 - Keep Expo Go updated on your phone.
 
+2. Start Metro:
+
+```bash
+npx expo start
+```
+
+3. Open with Expo Go on your phone by scanning the QR code.
+
+## Useful commands
+
+```bash
+npm run start
+npm run android
+npm run ios
+npm run web
+```
+
 ## Notes
 
 - Main app file: `App.js`
