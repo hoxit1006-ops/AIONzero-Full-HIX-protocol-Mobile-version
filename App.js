@@ -8,7 +8,6 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
-  Dimensions,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -23,8 +22,6 @@ const SUPABASE_URL = 'https://kgkukuesbjkzesnlpznk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtna3VrdWVzYmpremVzbmxwem5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg0NjUxMDUsImV4cCI6MjA1NDA0MTEwNX0.IUToCpQH_Xr3MmqkqQUc8YmL83p9zDfWiAx8aQEfE8o';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const { width } = Dimensions.get('window');
-
 export default function App() {
   const [callsign, setCallsign] = useState('');
   const [mining, setMining] = useState(false);
@@ -52,6 +49,8 @@ export default function App() {
   const lastLocation = useRef(null);
   const totalDistance = useRef(0);
   const uploadInterval = useRef(null);
+  const leaderboardInterval = useRef(null);
+  const networkStatsInterval = useRef(null);
 
   function generateSessionId() {
     return 'SESSION_' + Date.now() + '_' + Math.random().toString(36).substring(7);
@@ -85,15 +84,15 @@ export default function App() {
         await AsyncStorage.setItem('hix_callsign', newCallsign);
       }
       
-      if (savedVectors) setVectors(parseInt(savedVectors));
+      if (savedVectors) setVectors(parseInt(savedVectors, 10));
       if (savedHix) setHixEarned(parseFloat(savedHix));
 
       await requestAllPermissions();
       fetchLeaderboard();
       fetchNetworkStats();
 
-      setInterval(fetchLeaderboard, 30000);
-      setInterval(fetchNetworkStats, 15000);
+      leaderboardInterval.current = setInterval(fetchLeaderboard, 30000);
+      networkStatsInterval.current = setInterval(fetchNetworkStats, 15000);
     } catch (error) {
       console.error('Init error:', error);
     }
@@ -101,6 +100,8 @@ export default function App() {
 
   function cleanup() {
     if (uploadInterval.current) clearInterval(uploadInterval.current);
+    if (leaderboardInterval.current) clearInterval(leaderboardInterval.current);
+    if (networkStatsInterval.current) clearInterval(networkStatsInterval.current);
     Accelerometer.removeAllListeners();
     Gyroscope.removeAllListeners();
   }
@@ -230,7 +231,10 @@ export default function App() {
     Accelerometer.removeAllListeners();
     Gyroscope.removeAllListeners();
 
-    if (uploadInterval.current) clearInterval(uploadInterval.current);
+    if (uploadInterval.current) {
+      clearInterval(uploadInterval.current);
+      uploadInterval.current = null;
+    }
     if (dataQueue.current.length > 0) uploadBatch();
 
     saveProgress();
