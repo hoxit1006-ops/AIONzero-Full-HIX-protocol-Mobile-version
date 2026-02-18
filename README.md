@@ -103,3 +103,29 @@ npm run web
 - Expo config: `app.json`
 
 If you later want file-based routing with Expo Router, generate it explicitly and add the required router dependencies before introducing `app/` route files.
+
+## Using this with Expo Go while you are out (iPhone)
+
+Yes — this works with Expo Go for manual receipt tracking while your PC is running Metro.
+
+1. Start from your PC:
+
+```bash
+npm install
+npx expo start -c --lan
+```
+
+2. On iPhone, open **Expo Go** and scan the QR code.
+3. In the app:
+   - Add merchant/date/items/category/price as normal.
+   - Use **Photo reference** to paste an iCloud/Drive link or note when you cannot upload directly.
+   - If running web in Safari instead, **Upload Receipt Photo** works directly.
+
+### Important
+- Keep phone + PC on same Wi‑Fi when using `--lan`.
+- If network restrictions block LAN, use:
+
+```bash
+npx expo start -c --tunnel
+```
+

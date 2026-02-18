@@ -9,7 +9,6 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "doctor": "npx expo-doctor",
     "doctor": "expo doctor",
     "fix-deps": "expo install --fix"
   },
